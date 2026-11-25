@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>Agent Studio</title>
+<title>ABT Agent Studio</title>
+<link rel="icon" type="image/png" href="abt-logo.png">
 <!--
-  Agent Studio · หน้าเข้าสู่ระบบ (GitHub Pages) — R3Nov26o
+  ABT Agent Studio · หน้าเข้าสู่ระบบ (GitHub Pages) — R3Nov26o
   ไฟล์นี้เป็นหน้าเดียวที่อยู่บน GitHub: ไม่มีตัวโปรแกรมจริง · ตัวโปรแกรมโหลดจาก Cloudflare Worker หลังตรวจสิทธิ์แล้ว
   แก้ 2 บรรทัดใน CONFIG ด้านล่างให้ตรงกับของคุณ
 -->
@@ -32,13 +33,15 @@ h1{margin:0;font-size:32px;line-height:1.05;letter-spacing:-.03em}
 @keyframes load{0%{margin-left:-30%}100%{margin-left:100%}}
 .note{margin:22px 0 0;font-size:12.5px;color:var(--ink2);line-height:1.6}
 .who{display:none;margin:14px 0 0;font-size:13px}.who button{font:inherit;font-size:13px;color:#0a84ff;background:none;border:0;cursor:pointer;padding:4px}
+.orb.abt{background:none;box-shadow:none;border-radius:0;width:96px;height:96px}.orb.abt img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 12px 22px rgba(74,72,128,.35))}
+h1 .brand{display:block;font-size:15px;font-weight:700;letter-spacing:.32em;color:#4a4880;margin-bottom:4px}
 @media(prefers-reduced-motion:reduce){.orb,.bar i{animation:none}}
 </style>
 </head>
 <body>
 <main class="card" id="card">
-  <div class="orb" aria-hidden="true">✦</div>
-  <h1>Agent Studio</h1>
+  <div class="orb abt" aria-hidden="true"><img src="abt-logo.png" alt=""></div>
+  <h1><small class="brand">ABT</small>Agent Studio</h1>
   <p class="sub">ผู้ช่วย Multi-Agent ตามชุดทักษะ</p>
   <button class="gbtn" id="go" type="button">
     <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
@@ -150,7 +153,7 @@ function bridge(WORKER, SK){
   var S = {}; try { S = JSON.parse(localStorage.getItem(SK) || "{}") || {}; } catch (e) {}
   window.__ASL = true;
   window.AgentSplit = { email: S.email, role: S.role, logout: function(){ try { localStorage.removeItem(SK); } catch (e) {} location.replace(location.origin + location.pathname); } };
-  var FN = ["myAccess","bootInfo","adminHtml","adminLoad","adminSave","adminSaveCatalog","menuLoad","menuSave","sheetPull","inviteCfgSave","inviteSend"];   // ต้องตรงกับ API_FN ใน worker.js
+  var FN = ["myAccess","bootInfo","adminHtml","adminLoad","adminSave","adminSaveCatalog","menuLoad","menuSave","sheetPull","inviteCfgSave","inviteSend","packLibSave","myPacks"];   // ต้องตรงกับ API_FN ใน worker.js
   function R(){
     var ok = null, fail = null, o = { withSuccessHandler:function(f){ ok = f; return o; }, withFailureHandler:function(f){ fail = f; return o; } };
     FN.forEach(function(fn){

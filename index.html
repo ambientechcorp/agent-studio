@@ -150,7 +150,7 @@ function bridge(WORKER, SK){
   var S = {}; try { S = JSON.parse(localStorage.getItem(SK) || "{}") || {}; } catch (e) {}
   window.__ASL = true;
   window.AgentSplit = { email: S.email, role: S.role, logout: function(){ try { localStorage.removeItem(SK); } catch (e) {} location.replace(location.origin + location.pathname); } };
-  var FN = ["myAccess","bootInfo","adminHtml","adminLoad","adminSave","adminSaveCatalog","menuLoad","menuSave"];
+  var FN = ["myAccess","bootInfo","adminHtml","adminLoad","adminSave","adminSaveCatalog","menuLoad","menuSave","sheetPull","inviteCfgSave","inviteSend"];   // ต้องตรงกับ API_FN ใน worker.js
   function R(){
     var ok = null, fail = null, o = { withSuccessHandler:function(f){ ok = f; return o; }, withFailureHandler:function(f){ fail = f; return o; } };
     FN.forEach(function(fn){

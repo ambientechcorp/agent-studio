@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Agent Studio</title>
+<!--
+  Agent Studio · หน้าเข้าสู่ระบบ (GitHub Pages) — R3Nov26o
+  ไฟล์นี้เป็นหน้าเดียวที่อยู่บน GitHub: ไม่มีตัวโปรแกรมจริง · ตัวโปรแกรมโหลดจาก Cloudflare Worker หลังตรวจสิทธิ์แล้ว
+  แก้ 2 บรรทัดใน CONFIG ด้านล่างให้ตรงกับของคุณ
+-->
+<style>
+/* VOICE: premium, calm · IDEA: a keycard reader at the studio door · PICTURE: glowing agent orb · COLOUR: deep navy + spectrum accent · TYPE: Prompt */
+:root{color-scheme:light dark;--bg:light-dark(#f5f5f7,#000);--card:light-dark(rgba(255,255,255,.82),rgba(28,28,30,.82));--ink:light-dark(#1d1d1f,#f5f5f7);--ink2:light-dark(#6e6e73,#98989d);--line:light-dark(rgba(0,0,0,.08),rgba(255,255,255,.12))}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%}
+body{font:16px/1.55 Prompt,-apple-system,BlinkMacSystemFont,"SF Pro Text","Sukhumvit Set","Noto Sans Thai",Tahoma,sans-serif;background:var(--bg);color:var(--ink);display:grid;place-items:center;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));overflow-x:clip}
+body:before{content:"";position:fixed;inset:-20%;z-index:-1;background:radial-gradient(40% 35% at 15% 10%,rgba(94,92,230,.22),transparent 70%),radial-gradient(35% 30% at 90% 5%,rgba(255,55,95,.16),transparent 70%),radial-gradient(45% 40% at 70% 100%,rgba(10,132,255,.18),transparent 70%)}
+.card{width:min(440px,100%);padding:34px 28px 26px;border-radius:28px;background:var(--card);border:1px solid var(--line);box-shadow:0 30px 80px rgba(0,0,0,.14);backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);text-align:center}
+.orb{width:78px;height:78px;margin:0 auto 16px;border-radius:24px;display:grid;place-items:center;font-size:36px;color:#fff;background:conic-gradient(from 210deg,#5e5ce6,#bf5af2,#ff375f,#ff9f0a,#30d158,#0a84ff,#5e5ce6);box-shadow:0 12px 34px rgba(94,92,230,.45);animation:float 4s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-5px) rotate(-3deg)}}
+h1{margin:0;font-size:32px;line-height:1.05;letter-spacing:-.03em}
+.sub{margin:8px 0 22px;color:var(--ink2);font-size:15px}
+.gbtn{display:inline-flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:50px;padding:12px 18px;border-radius:14px;border:1px solid var(--line);background:light-dark(#fff,#1c1c1e);color:var(--ink);font:600 16px inherit;font-family:inherit;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:transform .15s}
+.gbtn:hover{transform:translateY(-1px)}.gbtn:focus-visible{outline:3px solid #0a84ff;outline-offset:2px}
+.gbtn[disabled]{opacity:.55;cursor:default}
+.st{min-height:24px;margin:16px 0 0;font-size:14px;color:var(--ink2)}
+.st.err{color:#d0382b}.st b{color:var(--ink)}
+.bar{height:6px;border-radius:99px;background:rgba(118,118,128,.18);overflow:hidden;margin:14px 0 0;display:none}
+.bar i{display:block;height:100%;width:30%;border-radius:99px;background:linear-gradient(90deg,#5e5ce6,#bf5af2,#ff375f);animation:load 1.2s ease-in-out infinite}
+@keyframes load{0%{margin-left:-30%}100%{margin-left:100%}}
+.note{margin:22px 0 0;font-size:12.5px;color:var(--ink2);line-height:1.6}
+.who{display:none;margin:14px 0 0;font-size:13px}.who button{font:inherit;font-size:13px;color:#0a84ff;background:none;border:0;cursor:pointer;padding:4px}
+@media(prefers-reduced-motion:reduce){.orb,.bar i{animation:none}}
+</style>
+</head>
+<body>
+<main class="card" id="card">
+  <div class="orb" aria-hidden="true">✦</div>
+  <h1>Agent Studio</h1>
+  <p class="sub">ผู้ช่วย Multi-Agent ตามชุดทักษะ</p>
+  <button class="gbtn" id="go" type="button">
+    <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+    เข้าสู่ระบบด้วย Google
+  </button>
+  <div class="bar" id="bar"><i></i></div>
+  <p class="st" id="st" role="status" aria-live="polite"></p>
+  <p class="who" id="who"></p>
+  <p class="note">ใช้บัญชี Google ของคุณ · ลูกค้าที่ลงทะเบียนใช้งานได้เต็มตามสิทธิ์ · บัญชีอื่นทดลองใช้ได้เมื่อผู้ดูแลเปิดโหมดทดลอง<br>ข้อมูลงานและ API key เก็บในเบราว์เซอร์ของคุณเท่านั้น</p>
+</main>
+<script>
+(function(){
+"use strict";
+/* ====== แก้ 2 ค่านี้ ====== */
+var CONFIG = {
+  WORKER_URL: "https://agent-studio.YOUR-SUBDOMAIN.workers.dev",     // ลิงก์ Cloudflare Worker (ไม่มี / ท้าย)
+  GOOGLE_CLIENT_ID: "YOUR-CLIENT-ID.apps.googleusercontent.com"      // OAuth Client ID (ชนิด Web application)
+};
+var SK = "as_split_v1";
+var $ = function(id){ return document.getElementById(id); };
+function st(t, err){ $("st").innerHTML = t; $("st").className = "st" + (err ? " err" : ""); }
+function busy(on){ $("bar").style.display = on ? "block" : "none"; $("go").disabled = !!on; }
+function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]; }); }
+function rnd(){ var a = new Uint8Array(16); crypto.getRandomValues(a); return Array.prototype.map.call(a, function(x){ return ("0" + x.toString(16)).slice(-2); }).join(""); }
+function getS(){ try { var s = JSON.parse(localStorage.getItem(SK) || "null"); return s && s.exp > Date.now() + 60000 ? s : null; } catch (e) { return null; } }
+function base(){ return location.origin + location.pathname; }
+
+/* 1) กลับมาจากหน้าต่างเชื่อมต่อ Gmail/Calendar/Drive ของตัวโปรแกรม (state=as_) */
+var h = location.hash || "";
+if (/[#&]state=as_/.test(h) && /access_token=|error=/.test(h)) {
+  if (window.opener && window.opener !== window) {
+    try { window.opener.postMessage({ type:"agentstudio-oauth", hash:h }, location.origin); } catch (e) {}
+    document.body.innerHTML = '<p style="font:16px Prompt,sans-serif;padding:40px;text-align:center">✓ เชื่อมต่อ Google แล้ว — ปิดหน้าต่างนี้ได้</p>';
+    setTimeout(function(){ window.close(); }, 400); return;
+  }
+  try { sessionStorage.setItem("agentstudio_oauth_pending", h); } catch (e) {}
+  try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+}
+
+/* 2) กลับมาจาก "เข้าสู่ระบบด้วย Google" (state=asl_) */
+if (/[#&]state=asl_/.test(h)) {
+  var p = {}; h.slice(1).split("&").forEach(function(kv){ var i = kv.indexOf("="); if (i > 0) p[decodeURIComponent(kv.slice(0, i))] = decodeURIComponent(kv.slice(i + 1).replace(/\+/g, " ")); });
+  try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+  var want = ""; try { want = sessionStorage.getItem("asl_state") || ""; } catch (e) {}
+  if (p.error) st("เข้าสู่ระบบไม่สำเร็จ: " + esc(p.error), true);
+  else if (!p.id_token || p.state !== want) st("การเข้าสู่ระบบไม่ถูกต้อง — กรุณาลองใหม่", true);
+  else { auth(p.id_token); return; }
+}
+
+/* 3) มี session อยู่แล้ว → เปิดโปรแกรมเลย */
+if (getS()) { loadApp(); return; }
+ready();
+
+function ready(){
+  busy(false);
+  if (/YOUR-/.test(CONFIG.WORKER_URL + CONFIG.GOOGLE_CLIENT_ID)) st("⚠️ ยังไม่ได้ตั้งค่า WORKER_URL / GOOGLE_CLIENT_ID ในไฟล์ index.html", true);
+}
+$("go").addEventListener("click", function(){
+  var state = "asl_" + rnd(), nonce = rnd();
+  try { sessionStorage.setItem("asl_state", state); sessionStorage.setItem("asl_nonce", nonce); } catch (e) {}
+  location.href = "https://accounts.google.com/o/oauth2/v2/auth?" + [
+    "client_id=" + encodeURIComponent(CONFIG.GOOGLE_CLIENT_ID), "redirect_uri=" + encodeURIComponent(base()),
+    "response_type=id_token", "scope=" + encodeURIComponent("openid email"), "prompt=select_account",
+    "state=" + state, "nonce=" + nonce ].join("&");
+});
+function auth(idt){
+  busy(true); st("กำลังตรวจสิทธิ์ใช้งาน…");
+  var nonce = ""; try { nonce = sessionStorage.getItem("asl_nonce") || ""; } catch (e) {}
+  fetch(CONFIG.WORKER_URL + "/auth", { method:"POST", headers:{ "content-type":"application/json" }, body: JSON.stringify({ id_token: idt, nonce: nonce }) })
+    .then(function(r){ return r.json().then(function(j){ j._s = r.status; return j; }); })
+    .then(function(j){
+      if (!j.ok) {
+        busy(false);
+        st("🔒 " + esc(j.e || "เข้าสู่ระบบไม่สำเร็จ") + (j.email ? "<br><b>" + esc(j.email) + "</b>" : "") + (j.contact ? "<br>ติดต่อผู้ดูแล: " + esc(j.contact) : ""), true);
+        return;
+      }
+      try { localStorage.setItem(SK, JSON.stringify({ token: j.session, exp: j.exp, email: j.email, role: j.role, contact: j.contact, guestNote: j.guestNote })); } catch (e) {}
+      loadApp();
+    })
+    .catch(function(e){ busy(false); st("เชื่อมต่อเซิร์ฟเวอร์ไม่ได้: " + esc(e.message), true); });
+}
+function logout(){ try { localStorage.removeItem(SK); } catch (e) {} location.replace(base()); }
+function loadApp(){
+  var s = getS(); if (!s) { ready(); return; }
+  busy(true); st("กำลังโหลดโปรแกรม… <b>" + esc(s.email) + "</b>");
+  $("who").style.display = "block"; $("who").innerHTML = '<button type="button" id="lo">ใช้บัญชีอื่น</button>';
+  $("lo").addEventListener("click", logout);
+  fetch(CONFIG.WORKER_URL + "/app", { headers:{ authorization:"Bearer " + s.token } })
+    .then(function(r){
+      if (r.status === 401) { logout(); throw new Error("session หมดอายุ"); }
+      if (!r.ok) return r.json().then(function(j){ throw new Error(j.e || ("HTTP " + r.status)); });
+      return r.text();
+    })
+    .then(function(html){
+      /* Client ID สำหรับเชื่อม Gmail/Calendar/Drive ในตัวโปรแกรม (ถ้าผู้ใช้ยังไม่ได้ใส่) */
+      try {
+        var k = JSON.parse(localStorage.getItem("agentstudio_settings_v1") || "{}") || {};
+        k.google = k.google || {}; if (!k.google.clientId) { k.google.clientId = CONFIG.GOOGLE_CLIENT_ID; localStorage.setItem("agentstudio_settings_v1", JSON.stringify(k)); }
+      } catch (e) {}
+      var shim = "<script>(" + bridge.toString() + ")(" + JSON.stringify(CONFIG.WORKER_URL) + "," + JSON.stringify(SK) + ");<\/script>";
+      var i = html.lastIndexOf("</body>");
+      html = i > -1 ? html.slice(0, i) + shim + html.slice(i) : html + shim;
+      document.open(); document.write(html); document.close();
+    })
+    .catch(function(e){ busy(false); st("โหลดโปรแกรมไม่สำเร็จ: " + esc(e.message), true); });
+}
+/* ตัวกลางในหน้าโปรแกรม: google.script.run → Cloudflare Worker (/api) — วางหลังสคริปต์หลักของโปรแกรม */
+function bridge(WORKER, SK){
+  var S = {}; try { S = JSON.parse(localStorage.getItem(SK) || "{}") || {}; } catch (e) {}
+  window.__ASL = true;
+  window.AgentSplit = { email: S.email, role: S.role, logout: function(){ try { localStorage.removeItem(SK); } catch (e) {} location.replace(location.origin + location.pathname); } };
+  var FN = ["myAccess","bootInfo","adminHtml","adminLoad","adminSave","adminSaveCatalog","menuLoad","menuSave"];
+  function R(){
+    var ok = null, fail = null, o = { withSuccessHandler:function(f){ ok = f; return o; }, withFailureHandler:function(f){ fail = f; return o; } };
+    FN.forEach(function(fn){
+      o[fn] = function(){
+        var args = Array.prototype.slice.call(arguments);
+        fetch(WORKER + "/api", { method:"POST", headers:{ "content-type":"application/json", authorization:"Bearer " + (S.token || "") }, body: JSON.stringify({ fn: fn, args: args }) })
+          .then(function(r){ return r.json().then(function(j){ if (r.status === 401 && j.relogin) window.AgentSplit.logout(); return j; }); })
+          .then(function(j){ if (j.ok) { if (ok) ok(j.v); } else if (fail) fail({ message: j.e || "ผิดพลาด" }); })
+          .catch(function(e){ if (fail) fail({ message: e.message }); });
+      };
+    });
+    return o;
+  }
+  var run = {};
+  ["withSuccessHandler","withFailureHandler"].concat(FN).forEach(function(m){ run[m] = function(){ var r = R(); return r[m].apply(r, arguments); }; });
+  window.google = window.google || {}; window.google.script = { run: run };
+  setTimeout(function(){ try { if (window.__ASRu) window.__ASRu(); } catch (e) {} }, 300);
+}
+})();
+</script>
+</body>
+</html>
